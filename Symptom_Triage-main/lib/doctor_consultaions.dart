@@ -1,0 +1,366 @@
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:symtom_checker/doctor_appointment_video.dart';
+
+class ConsultationDetailsPage extends StatefulWidget {
+  final String patientName;
+  final int age;
+  final String gender;
+  final String location;
+  final String appointmentTime;
+  final String aiSymptomContext;
+
+  const ConsultationDetailsPage({
+    Key? key,
+    this.patientName = 'Sarah Johnson',
+    this.age = 32,
+    this.gender = 'Female',
+    this.location = 'Mumbai, Maharashtra',
+    this.appointmentTime = '10:30 AM',
+    this.aiSymptomContext =
+        'Patient reports persistent headaches (7 days), mild fever, and fatigue. No history of migraines. BP normal.',
+  }) : super(key: key);
+
+  @override
+  State<ConsultationDetailsPage> createState() =>
+      _ConsultationDetailsPageState();
+}
+
+class _ConsultationDetailsPageState extends State<ConsultationDetailsPage> {
+  // App color theme
+  static const Color appColor = Color(0xFF199A8E);
+  static const Color titleColor = Colors.black;
+  static const Color backgroundColor = Colors.white;
+  static const Color warningBgColor = Color(0xFFFEF3CD);
+  static const Color warningTextColor = Color(0xFF856404);
+  static const Color warningIconColor = Color(0xFFA97E2E);
+
+  void _handleStartConsultation() {
+    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DoctorAppointmentVideo()),
+                      );
+  }
+
+  void _handleBackButton() {
+    Navigator.of(context).pop();
+  }
+
+  String _getPatientInitials(String name) {
+    List<String> nameParts = name.split(' ');
+    String initials = '';
+    for (var part in nameParts) {
+      if (part.isNotEmpty) {
+        initials += part[0].toUpperCase();
+      }
+    }
+    return initials;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+    final isTablet =
+        MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.width < 1024;
+
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        backgroundColor: backgroundColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: titleColor, size: 24),
+          onPressed: _handleBackButton,
+        ),
+        title: const Text(
+          'Consultation Details',
+          style: TextStyle(
+            color: titleColor,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: false,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: isMobile ? 16 : isTablet ? 24 : 32,
+            vertical: isMobile ? 16 : 24,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // AI Warning Banner
+           //   _buildWarningBanner(),
+              const SizedBox(height: 24),
+              // Patient Info Card
+              _buildPatientInfoCard(isMobile),
+              const SizedBox(height: 24),
+              // Appointment Time Card
+              _buildAppointmentTimeCard(isMobile),
+              const SizedBox(height: 24),
+              // AI Symptom Context Section
+              _buildSymptomContextSection(isMobile),
+              const SizedBox(height: 32),
+              // Start Consultation Button
+              _buildStartConsultationButton(isMobile),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+ /* Widget _buildWarningBanner() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: warningBgColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFFFFEBCD), width: 1),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: FaIcon(
+              FontAwesomeIcons.triangleExclamation,
+              size: 18,
+              color: warningIconColor,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(
+                    text: 'AI-Assisted Information: ',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: warningTextColor,
+                    ),
+                  ),
+                  const TextSpan(
+                    text:
+                        'This summary is generated by AI triage and does not constitute a medical diagnosis.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: warningTextColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  } */
+
+  Widget _buildPatientInfoCard(bool isMobile) {
+    final initials = _getPatientInitials(widget.patientName);
+
+    return Container(
+      padding: EdgeInsets.all(isMobile ? 16 : 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Avatar
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: const Color(0xFFD1F0ED),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                initials,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: appColor,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          // Patient Details
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.patientName,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: titleColor,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${widget.age} yrs • ${widget.gender}',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.locationDot,
+                      size: 12,
+                      color: Colors.grey.shade600,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      widget.location,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAppointmentTimeCard(bool isMobile) {
+    return Container(
+      padding: EdgeInsets.all(isMobile ? 16 : 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Appointment Time',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            widget.appointmentTime,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: titleColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSymptomContextSection(bool isMobile) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          ' Symptom Context',
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: titleColor,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: EdgeInsets.all(isMobile ? 16 : 20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade200, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.08),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Text(
+            widget.aiSymptomContext,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade700,
+              height: 1.6,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStartConsultationButton(bool isMobile) {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: ElevatedButton(
+        onPressed: _handleStartConsultation,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: appColor,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FaIcon(
+              FontAwesomeIcons.video,
+              size: 18,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Start Consultation',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -1,0 +1,7 @@
+project_id = "qhhsgflsrgvplnnxokqt"
+
+[functions.triage-chat]
+verify_jwt = false
+
+[functions.trigger-emergency]
+verify_jwt = false
